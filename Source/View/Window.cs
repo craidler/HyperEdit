@@ -45,6 +45,7 @@ namespace HyperEdit.View {
 
   public class Window : MonoBehaviour {
     private static GameObject _gameObject;
+    private static bool _useSkin = false;
 
     internal static GameObject GameObject {
       get {
@@ -151,24 +152,26 @@ namespace HyperEdit.View {
     }
 
     public void OnGUI() {
-      GUI.skin = HighLogic.Skin;
+      if (_useSkin) GUI.skin = HighLogic.Skin;
       _windowRect = GUILayout.Window(GetInstanceID(), _windowRect, DrawWindow, Title, GUILayout.ExpandHeight(true));
 
-      if (string.IsNullOrEmpty(_oldTooltip))
-        return;
+      if (string.IsNullOrEmpty(_oldTooltip)) return;
       var rect = new Rect(_windowRect.xMin, _windowRect.yMax, _windowRect.width, 50);
       GUI.Label(rect, _oldTooltip);
     }
 
     private void DrawWindow(int windowId) {
       GUILayout.BeginVertical();
-      if (GUI.Button(new Rect(_windowRect.width - 18, 2, 16, 16), "X")) // X button from mechjeb
+      
+      if (GUI.Button(new Rect(_windowRect.width - 18, 2, 16, 16), "X")) {
         Close();
+      }
+      
       _drawFunc(this);
-
       _tempTooltip = GUI.tooltip;
 
       GUILayout.EndVertical();
+      
       GUI.DragWindow();
     }
 
